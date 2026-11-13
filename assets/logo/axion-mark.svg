@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" fill="none" role="img" aria-label="Brand geometric A and X emblem">
+  <path d="M7 33L20 7L33 33" stroke="#111820" stroke-width="3.2" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M12 22L28 33" stroke="#D43A3A" stroke-width="3.2" stroke-linecap="square"/>
+  <path d="M28 22L12 33" stroke="#111820" stroke-width="2.4" stroke-linecap="square" opacity="0.9"/>
+</svg>

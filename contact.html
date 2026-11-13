@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact Us — AXION COACHING</title>
+    <meta
+      name="description"
+      content="Reach AXION COACHING via WhatsApp, phone, email, or social channels. Mobile personal trainers visit clients at agreed home or outdoor locations."
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/logo/axion-mark.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-page="contact" data-page-title="Contact Us">
+    <header id="site-header"></header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <p class="eyebrow">Contact Us</p>
+          <h1 class="page-hero-title">Direct Coaching Coordination via WhatsApp &amp; Phone</h1>
+          <p class="page-hero-lead">
+            Because we operate a mobile personal training model, our coaches visit clients at agreed
+            homes, residential gyms, outdoor spaces, or coach remotely online. All contact details
+            below are configurable in <code>js/config.js</code>.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section-light">
+        <div class="container grid-2" style="align-items:start;">
+          <!-- Tap-Friendly Contact Channels -->
+          <div class="card">
+            <div>
+              <p class="eyebrow">Direct Channels</p>
+              <h2 class="card-title">Contact Details (Editable)</h2>
+            </div>
+
+            <div class="contact-item-list">
+              <a
+                href="#"
+                data-whatsapp-message="Hello {BRAND}, I would like to enquire about personal coaching."
+                class="contact-tap-row"
+              >
+                <span class="spec-label">WhatsApp (Tap to Message)</span>
+                <span class="spec-value" data-contact-whatsapp></span>
+              </a>
+
+              <a id="contact-phone-link" href="contact.html" class="contact-tap-row">
+                <span class="spec-label">Business Phone</span>
+                <span class="spec-value" data-contact-phone></span>
+              </a>
+
+              <a id="contact-email-link" href="contact.html" class="contact-tap-row">
+                <span class="spec-label">Business Email</span>
+                <span class="spec-value" data-contact-email></span>
+              </a>
+
+              <div class="contact-tap-row">
+                <span class="spec-label">Service Cities</span>
+                <span class="spec-value" data-contact-cities></span>
+              </div>
+            </div>
+
+            <p
+              class="card-text"
+              style="padding-top:12px;border-top:1px solid var(--color-border);"
+              data-location-policy
+            ></p>
+
+            <div style="padding-top:8px;">
+              <h3 class="footer-heading" style="color:var(--color-muted-ink);margin-bottom:6px;">
+                Social Media Links
+              </h3>
+              <ul data-render="social-links"></ul>
+            </div>
+          </div>
+
+          <!-- Interactive WhatsApp Enquiry Selector -->
+          <div class="card">
+            <div>
+              <p class="eyebrow">Instant WhatsApp Enquiry</p>
+              <h2 class="card-title">Select Your Coaching Interest</h2>
+              <p class="card-text" style="margin-top:8px;">
+                Tap a coaching topic below to prepare your WhatsApp message and connect with our
+                coordination desk in one tap.
+              </p>
+            </div>
+
+            <div class="filter-group" role="group" aria-label="Select WhatsApp enquiry topic">
+              <button
+                type="button"
+                class="filter-btn is-active"
+                data-wa-topic="Home Personal Training"
+              >
+                Home Training
+              </button>
+              <button type="button" class="filter-btn" data-wa-topic="Outdoor Personal Training">
+                Outdoor Training
+              </button>
+              <button type="button" class="filter-btn" data-wa-topic="Online Coaching">
+                Online Coaching
+              </button>
+              <button type="button" class="filter-btn" data-wa-topic="Partner Training">
+                Partner Training
+              </button>
+              <button type="button" class="filter-btn" data-wa-topic="General Coaching Enquiry">
+                General Enquiry
+              </button>
+            </div>
+
+            <div class="card-light">
+              <p class="meta-muted">Prepared WhatsApp message:</p>
+              <p
+                id="contact-whatsapp-preview"
+                style="font-size:0.9375rem;color:var(--color-midnight);font-style:italic;"
+              ></p>
+            </div>
+
+            <div class="hero-actions" style="padding-top:0;">
+              <a id="contact-whatsapp-cta" href="#" class="btn btn-primary">
+                Open WhatsApp Chat
+              </a>
+              <a href="services.html" class="btn btn-outline-dark">Explore Services</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>

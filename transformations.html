@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Transformations — AXION COACHING</title>
+    <meta
+      name="description"
+      content="Verified client progress stories and transformation gallery structure."
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/logo/axion-mark.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body data-page="transformations" data-page-title="Client Transformations">
+    <header id="site-header"></header>
+
+    <main>
+      <section class="page-hero">
+        <div class="container">
+          <p class="eyebrow">Transformations</p>
+          <h1 class="page-hero-title">Verified Client Progress Gallery</h1>
+          <p class="page-hero-lead">
+            We never publish fabricated transformations or stock results. The clearly labelled slots
+            below are configured in <code>js/config.js</code> and ready for real client stories with
+            written consent.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section-white">
+        <div class="container">
+          <div class="filter-bar">
+            <p class="card-text">Filter case studies by goal</p>
+            <div class="filter-group" role="group" aria-label="Filter transformations by goal">
+              <button type="button" class="filter-btn is-active" data-goal-filter="All">All</button>
+              <button type="button" class="filter-btn" data-goal-filter="Weight Loss & Conditioning">
+                Weight Loss
+              </button>
+              <button type="button" class="filter-btn" data-goal-filter="Strength & Muscle Gain">
+                Strength &amp; Muscle
+              </button>
+              <button type="button" class="filter-btn" data-goal-filter="Partner Fitness & Consistency">
+                Partner Fitness
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-3" data-render="transformations"></div>
+
+          <div
+            class="card-light"
+            style="margin-top:44px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;"
+          >
+            <div>
+              <h2 class="card-title">Ready to Begin Your Programme?</h2>
+              <p class="card-text" style="margin-top:4px;">
+                Message our coaching team on WhatsApp to check availability in your area.
+              </p>
+            </div>
+            <a
+              href="#"
+              data-whatsapp-message="Hello {BRAND}, I would like to start personal coaching."
+              class="btn btn-primary"
+            >
+              Chat on WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="site-footer"></footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/script.js"></script>
+  </body>
+</html>
