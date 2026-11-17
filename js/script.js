@@ -161,10 +161,10 @@
     var socialIconsHtml = renderHeaderSocialIcons();
 
     var hamburgerSvg =
-      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+      '<svg class="menu-icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
 
     var closeSvg =
-      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      '<svg class="menu-icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
 
     mount.className = "site-header";
     mount.innerHTML =
@@ -188,8 +188,9 @@
       '    <div class="header-social" aria-label="Social Media Links">' +
       socialIconsHtml +
       "    </div>" +
-      '    <button type="button" class="menu-toggle" id="mobile-menu-btn" aria-label="Open navigation menu" aria-expanded="false">' +
+      '    <button type="button" class="menu-toggle" id="mobile-menu-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">' +
       hamburgerSvg +
+      closeSvg +
       "    </button>" +
       "  </div>" +
       "</div>" +
@@ -235,12 +236,14 @@
 
     function setDrawerState(open) {
       if (!btn || !drawer) return;
-      drawer.classList.toggle("is-open", open);
-      drawer.setAttribute("aria-hidden", open ? "false" : "true");
-      btn.setAttribute("aria-expanded", open ? "true" : "false");
-      btn.setAttribute("aria-label", open ? "Close navigation menu" : "Open navigation menu");
-      btn.innerHTML = open ? closeSvg : hamburgerSvg;
-      if (open) {
+      var nextOpen = Boolean(open);
+      drawer.classList.toggle("is-open", nextOpen);
+      drawer.setAttribute("aria-hidden", nextOpen ? "false" : "true");
+      btn.classList.toggle("is-open", nextOpen);
+      btn.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+      btn.setAttribute("aria-label", nextOpen ? "Close navigation menu" : "Open navigation menu");
+      document.body.classList.toggle("nav-menu-open", nextOpen);
+      if (nextOpen) {
         setHeaderHidden(false);
       }
       lastY = getClampedScrollY();
@@ -255,7 +258,11 @@
     }
 
     function onDocumentClick(e) {
-      if (drawer && drawer.classList.contains("is-open") && !mount.contains(e.target)) {
+      if (
+        drawer &&
+        drawer.classList.contains("is-open") &&
+        !mount.contains(e.target)
+      ) {
         setDrawerState(false);
       }
     }
@@ -320,6 +327,7 @@
         window.cancelAnimationFrame(rafId);
         rafId = 0;
       }
+      document.body.classList.remove("nav-menu-open");
       window.removeEventListener("scroll", onWindowScroll);
       window.removeEventListener("resize", onWindowResize);
       window.removeEventListener("pagehide", cleanupHeader);
