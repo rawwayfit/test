@@ -161,10 +161,10 @@
     var socialIconsHtml = renderHeaderSocialIcons();
 
     var hamburgerSvg =
-      '<svg class="menu-icon-open" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
+      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>';
 
     var closeSvg =
-      '<svg class="menu-icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+      '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
 
     mount.className = "site-header";
     mount.innerHTML =
@@ -190,7 +190,6 @@
       "    </div>" +
       '    <button type="button" class="menu-toggle" id="mobile-menu-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">' +
       hamburgerSvg +
-      closeSvg +
       "    </button>" +
       "  </div>" +
       "</div>" +
@@ -203,6 +202,7 @@
     var btn = document.getElementById("mobile-menu-btn");
     var drawer = document.getElementById("mobile-drawer");
 
+    var isMenuOpen = false;
     var isHidden = false;
 
     function getClampedScrollY() {
@@ -223,7 +223,7 @@
 
     function setHeaderHidden(hidden) {
       var nextHidden = Boolean(hidden);
-      if (nextHidden && drawer && drawer.classList.contains("is-open")) {
+      if (nextHidden && isMenuOpen) {
         nextHidden = false;
       }
       if (nextHidden && mount.contains(document.activeElement)) {
@@ -237,11 +237,13 @@
     function setDrawerState(open) {
       if (!btn || !drawer) return;
       var nextOpen = Boolean(open);
+      isMenuOpen = nextOpen;
       drawer.classList.toggle("is-open", nextOpen);
       drawer.setAttribute("aria-hidden", nextOpen ? "false" : "true");
       btn.classList.toggle("is-open", nextOpen);
       btn.setAttribute("aria-expanded", nextOpen ? "true" : "false");
       btn.setAttribute("aria-label", nextOpen ? "Close navigation menu" : "Open navigation menu");
+      btn.innerHTML = nextOpen ? closeSvg : hamburgerSvg;
       document.body.classList.toggle("nav-menu-open", nextOpen);
       if (nextOpen) {
         setHeaderHidden(false);
@@ -252,18 +254,24 @@
     }
 
     function onDocumentKeydown(e) {
-      if (e.key === "Escape" && drawer && drawer.classList.contains("is-open")) {
+      if (e.key === "Escape" && isMenuOpen) {
         setDrawerState(false);
       }
     }
 
     function onDocumentClick(e) {
-      if (
-        drawer &&
-        drawer.classList.contains("is-open") &&
-        !mount.contains(e.target)
-      ) {
+      if (!isMenuOpen) return;
+      if (!e.target || !document.contains(e.target) || mount.contains(e.target)) return;
+      setDrawerState(false);
+    }
+
+    function onHistoryOrHashSync() {
+      if (isMenuOpen || (drawer && drawer.classList.contains("is-open"))) {
         setDrawerState(false);
+      }
+      lastY = getClampedScrollY();
+      if (lastY <= (mount.offsetHeight || 72)) {
+        setHeaderHidden(false);
       }
     }
 
@@ -272,7 +280,7 @@
       var currentY = getClampedScrollY();
       var headerHeight = mount.offsetHeight || 72;
 
-      if (drawer && drawer.classList.contains("is-open")) {
+      if (isMenuOpen) {
         setHeaderHidden(false);
         lastY = currentY;
         scrollDir = "";
@@ -313,7 +321,7 @@
     }
 
     function onWindowResize() {
-      if (window.innerWidth >= 1024 && drawer && drawer.classList.contains("is-open")) {
+      if (window.innerWidth >= 1024 && isMenuOpen) {
         setDrawerState(false);
       }
       lastY = getClampedScrollY();
@@ -330,6 +338,8 @@
       document.body.classList.remove("nav-menu-open");
       window.removeEventListener("scroll", onWindowScroll);
       window.removeEventListener("resize", onWindowResize);
+      window.removeEventListener("pageshow", onHistoryOrHashSync);
+      window.removeEventListener("hashchange", onHistoryOrHashSync);
       window.removeEventListener("pagehide", cleanupHeader);
       document.removeEventListener("keydown", onDocumentKeydown);
       document.removeEventListener("click", onDocumentClick);
@@ -337,8 +347,7 @@
 
     if (btn && drawer) {
       btn.addEventListener("click", function () {
-        var nextOpen = !drawer.classList.contains("is-open");
-        setDrawerState(nextOpen);
+        setDrawerState(!isMenuOpen);
       });
 
       drawer.querySelectorAll("a").forEach(function (link) {
@@ -353,6 +362,8 @@
 
     window.addEventListener("scroll", onWindowScroll, { passive: true });
     window.addEventListener("resize", onWindowResize, { passive: true });
+    window.addEventListener("pageshow", onHistoryOrHashSync);
+    window.addEventListener("hashchange", onHistoryOrHashSync);
     window.addEventListener("pagehide", cleanupHeader);
   }
 
