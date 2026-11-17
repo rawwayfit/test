@@ -1,5 +1,5 @@
 /**
- * AXION COACHING — Central Website Configuration
+ * UNIFORCE — Central Website Configuration
  * ---------------------------------------------------------------------------
  * Update brand name, tagline, logo paths, colours, contact details,
  * founders, coaches, transformations, and testimonials in this
@@ -7,15 +7,15 @@
  */
 
 window.SITE_CONFIG = {
-  brandName: "AXION COACHING",
-  brandShort: "AXION",
-  tagline: "BUILT BY DISCIPLINE. DRIVEN BY PROGRESS.",
-  supportingStatement: "YOUR GOALS. YOUR LOCATION. OUR COACHING.",
-  coreMessage: "WE BRING PROFESSIONAL FITNESS COACHING TO YOU.",
+  brandName: "UNIFORCE",
+  brandShort: "UNIFORCE",
+  tagline: "TWO MINDS. ONE FORCE.",
+  supportingStatement: "BUILT TOGETHER. STRONGER TOGETHER.",
+  coreMessage: "FITNESS. PERFORMANCE. WELLNESS.",
 
   logo: {
-    darkBgPath: "assets/logo/axion-mark-light.svg",
-    lightBgPath: "assets/logo/axion-mark.svg",
+    darkBgPath: "assets/logo/uniforce-mark-light.svg",
+    lightBgPath: "assets/logo/uniforce-mark.svg",
   },
 
   colors: {
@@ -49,25 +49,25 @@ window.SITE_CONFIG = {
         id: "instagram",
         label: "Instagram",
         handle: "@[instagram-placeholder]",
-        url: "https://www.instagram.com/axioncoaching_placeholder/",
+        url: "https://www.instagram.com/uniforce_placeholder/",
       },
       {
         id: "facebook",
         label: "Facebook",
         handle: "[Facebook Page Placeholder]",
-        url: "https://www.facebook.com/axioncoaching.placeholder",
+        url: "https://www.facebook.com/uniforce.placeholder",
       },
       {
-        id: "youtube",
-        label: "YouTube",
-        handle: "[YouTube Channel Placeholder]",
-        url: "https://www.youtube.com/@axioncoaching-placeholder",
+        id: "whatsapp",
+        label: "WhatsApp",
+        handle: "[WhatsApp Number — Update in js/config.js]",
+        url: "",
       },
       {
         id: "linkedin",
         label: "LinkedIn",
         handle: "[LinkedIn Page Placeholder]",
-        url: "https://www.linkedin.com/company/axion-coaching-placeholder/",
+        url: "https://www.linkedin.com/company/uniforce-placeholder/",
       },
     ],
   },
@@ -77,9 +77,9 @@ window.SITE_CONFIG = {
       label: "Co-Founder 01",
       ownership: "Equal Co-Founder (50% Ownership)",
       name: "[Founder 01 Name — Editable Placeholder]",
-      role: "Co-Founder & Coaching Operations [Placeholder]",
+      role: "Co-Founder & Performance Coaching [Placeholder]",
       qualifications: "[Verified certifications & coaching credentials to be added]",
-      bio: "Reserved for verified founder biography, coaching background, and leadership focus.",
+      bio: "Reserved for verified founder biography combining strength, coaching knowledge, and client commitment.",
     },
     {
       label: "Co-Founder 02",
@@ -87,7 +87,7 @@ window.SITE_CONFIG = {
       name: "[Founder 02 Name — Editable Placeholder]",
       role: "Co-Founder & Client Experience [Placeholder]",
       qualifications: "[Verified certifications & coaching credentials to be added]",
-      bio: "Reserved for verified founder biography, training philosophy, and operational focus.",
+      bio: "Reserved for verified founder biography combining discipline, movement expertise, and client support.",
     },
   ],
 
@@ -95,7 +95,7 @@ window.SITE_CONFIG = {
     {
       id: "coach-01",
       photo: "assets/images/coach-01.jpeg",
-      photoAlt: "AXION COACHING Coach 01 portrait",
+      photoAlt: "UNIFORCE Coach 01 portrait",
       photoPosition: "50% 14%",
       name: "[Coach Profile 01 — Editable Sample]",
       role: "Home Personal Training & Strength Specialist [Placeholder]",
@@ -111,7 +111,7 @@ window.SITE_CONFIG = {
     {
       id: "coach-02",
       photo: "assets/images/coach-02.jpeg",
-      photoAlt: "AXION COACHING Coach 02 physique and conditioning profile",
+      photoAlt: "UNIFORCE Coach 02 physique and conditioning profile",
       photoPosition: "50% 8%",
       name: "[Coach Profile 02 — Editable Sample]",
       role: "Outdoor Conditioning, Partner & Online Coach [Placeholder]",
