@@ -128,30 +128,51 @@ window.SITE_CONFIG = {
 
   transformations: [
     {
+      id: "story-01",
       clientLabel: "Client Story 01 [Placeholder]",
+      clientName: "",
       goal: "Weight Loss & Conditioning",
       format: "Home Personal Training",
-      timeframe: "[Timeframe Pending Verification]",
+      timeframe: "[Duration Pending Verification]",
+      beforeImage: "assets/images/transformation-01-before.svg",
+      afterImage: "assets/images/transformation-01-after.svg",
+      beforeAlt: "Client Story 01 before transformation photo placeholder",
+      afterAlt: "Client Story 01 after transformation photo placeholder",
+      isPlaceholderMedia: true,
       story:
         "Slot reserved for a verified client progress summary describing starting routine, consistency milestones, and sustainable training habits.",
       quote:
         '"[Verified client quote to be added once genuine client consent and imagery are uploaded.]"',
     },
     {
+      id: "story-02",
       clientLabel: "Client Story 02 [Placeholder]",
+      clientName: "",
       goal: "Strength & Muscle Gain",
       format: "Home / Residential Gym",
-      timeframe: "[Timeframe Pending Verification]",
+      timeframe: "[Duration Pending Verification]",
+      beforeImage: "assets/images/transformation-02-before.svg",
+      afterImage: "assets/images/transformation-02-after.svg",
+      beforeAlt: "Client Story 02 before transformation photo placeholder",
+      afterAlt: "Client Story 02 after transformation photo placeholder",
+      isPlaceholderMedia: true,
       story:
         "Slot reserved for a verified strength progression story documenting technique quality, progressive overload, and weekly adherence.",
       quote:
         '"[Verified client quote to be added once genuine client consent and imagery are uploaded.]"',
     },
     {
+      id: "story-03",
       clientLabel: "Client Story 03 [Placeholder]",
+      clientName: "",
       goal: "Partner Fitness & Consistency",
       format: "Partner & Online Hybrid",
-      timeframe: "[Timeframe Pending Verification]",
+      timeframe: "[Duration Pending Verification]",
+      beforeImage: "assets/images/transformation-03-before.svg",
+      afterImage: "assets/images/transformation-03-after.svg",
+      beforeAlt: "Client Story 03 before transformation photo placeholder",
+      afterAlt: "Client Story 03 after transformation photo placeholder",
+      isPlaceholderMedia: true,
       story:
         "Slot reserved for a verified partner training case study highlighting shared accountability around busy professional schedules.",
       quote:

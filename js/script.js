@@ -617,13 +617,65 @@
       .join("");
   }
 
-  function renderTransformationCardHtml(item) {
+  function renderTransformationCardHtml(item, idx) {
+    var storyId = item.id || "story-" + (typeof idx === "number" ? idx + 1 : 1);
+    var displayTitle =
+      item.clientName && String(item.clientName).trim()
+        ? item.clientName
+        : item.clientLabel;
+    var hasBeforeAfter = Boolean(item.beforeImage && item.afterImage);
+    var singleImg = item.comparisonImage || item.afterImage || item.beforeImage || "";
+
+    var mediaInnerHtml = "";
+    if (hasBeforeAfter) {
+      mediaInnerHtml =
+        '<div class="transformation-compare">' +
+        '  <div class="transformation-panel">' +
+        '    <span class="transformation-tag">Before</span>' +
+        '    <img src="' +
+        escapeHtml(item.beforeImage) +
+        '" alt="' +
+        escapeHtml(item.beforeAlt || displayTitle + " before photo") +
+        '" width="480" height="600" loading="lazy">' +
+        "  </div>" +
+        '  <div class="transformation-panel">' +
+        '    <span class="transformation-tag is-after">After</span>' +
+        '    <img src="' +
+        escapeHtml(item.afterImage) +
+        '" alt="' +
+        escapeHtml(item.afterAlt || displayTitle + " after photo") +
+        '" width="480" height="600" loading="lazy">' +
+        "  </div>" +
+        "</div>";
+    } else if (singleImg) {
+      mediaInnerHtml =
+        '<div class="transformation-single">' +
+        '  <div class="transformation-panel">' +
+        '    <span class="transformation-tag is-after">Progress</span>' +
+        '    <img src="' +
+        escapeHtml(singleImg) +
+        '" alt="' +
+        escapeHtml(item.afterAlt || item.beforeAlt || displayTitle + " transformation photo") +
+        '" width="640" height="480" loading="lazy">' +
+        "  </div>" +
+        "</div>";
+    }
+
+    var expandSvg =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>';
+
     return (
-      '<article class="card-media">' +
-      '  <div class="placeholder-slot">' +
-      '    <span class="meta-muted" style="font-weight:600;">Client Transformation Photo Slot</span>' +
-      '    <span class="meta-muted" style="max-width:26ch;">Reserved for verified client progress imagery with written consent.</span>' +
-      "  </div>" +
+      '<article class="card-media transformation-card">' +
+      '  <button type="button" class="transformation-media-btn" data-lightbox-open data-story-id="' +
+      escapeHtml(storyId) +
+      '" aria-label="View larger Before and After photos for ' +
+      escapeHtml(displayTitle) +
+      '">' +
+      mediaInnerHtml +
+      '    <span class="transformation-zoom-hint">' +
+      expandSvg +
+      "<span>View Larger</span></span>" +
+      "  </button>" +
       '  <div class="card-media-body">' +
       '    <div style="display:flex;flex-direction:column;gap:8px;">' +
       '      <p class="meta-line">' +
@@ -632,18 +684,18 @@
       escapeHtml(item.format) +
       "</p>" +
       '      <h3 class="card-title">' +
-      escapeHtml(item.clientLabel) +
+      escapeHtml(displayTitle) +
       "</h3>" +
-      '      <p class="meta-muted">' +
+      '      <p class="transformation-duration">Duration: <span>' +
       escapeHtml(item.timeframe) +
-      "</p>" +
+      "</span></p>" +
       '      <p class="card-text">' +
       escapeHtml(item.story) +
       "</p>" +
       "    </div>" +
-      '    <p style="font-size:0.875rem;font-style:italic;color:var(--color-muted-ink);padding-top:12px;border-top:1px solid var(--color-border);">' +
-      escapeHtml(item.quote) +
-      "</p>" +
+      (item.quote
+        ? '    <p class="transformation-quote">' + escapeHtml(item.quote) + "</p>"
+        : "") +
       "  </div>" +
       "</article>"
     );
@@ -987,6 +1039,7 @@
     var dragDx = 0;
     var baseTranslate = 0;
     var dragStepPx = 0;
+    var suppressClickUntil = 0;
 
     function onTouchStart(e) {
       if (total <= 1 || isAnimating || e.touches.length !== 1) return;
@@ -1031,6 +1084,9 @@
     function onTouchEnd() {
       isTouching = false;
       if (startX !== null && dragMode === "horizontal") {
+        if (Math.abs(dragDx) > 8) {
+          suppressClickUntil = Date.now() + 350;
+        }
         var elapsed = Date.now() - startTime;
         var threshold =
           elapsed < 260
@@ -1054,6 +1110,13 @@
       startY = null;
       dragMode = null;
       dragDx = 0;
+    }
+
+    function onViewportCaptureClick(e) {
+      if (Date.now() < suppressClickUntil) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
     }
 
     function scheduleSync() {
@@ -1096,6 +1159,7 @@
     viewport.addEventListener("touchmove", onTouchMove, { passive: false });
     viewport.addEventListener("touchend", onTouchEnd, { passive: true });
     viewport.addEventListener("touchcancel", onTouchEnd, { passive: true });
+    viewport.addEventListener("click", onViewportCaptureClick, true);
     window.addEventListener("resize", scheduleSync);
 
     var ro = null;
@@ -1145,6 +1209,7 @@
       viewport.removeEventListener("touchmove", onTouchMove);
       viewport.removeEventListener("touchend", onTouchEnd);
       viewport.removeEventListener("touchcancel", onTouchEnd);
+      viewport.removeEventListener("click", onViewportCaptureClick, true);
       window.removeEventListener("resize", scheduleSync);
       window.removeEventListener("pagehide", destroy);
     }
@@ -1256,7 +1321,7 @@
     }
 
     var slidesHtml = slideEntries
-      .map(function (entry) {
+      .map(function (entry, idx) {
         var cloneAttrs = entry.isClone
           ? ' aria-hidden="true" data-carousel-clone="true"'
           : "";
@@ -1264,7 +1329,7 @@
           '<div class="stories-slide"' +
           cloneAttrs +
           ">" +
-          renderTransformationCardHtml(entry.item) +
+          renderTransformationCardHtml(entry.item, idx) +
           "</div>"
         );
       })
@@ -1310,6 +1375,220 @@
       autoplayMs: 0,
       dotLabelPrefix: "Show client progress story",
     });
+  }
+
+  function initTransformationLightbox() {
+    var items = cfg.transformations || [];
+    if (!items.length) return;
+    if (!document.querySelector("[data-lightbox-open]")) return;
+
+    var existing = document.getElementById("transformation-lightbox");
+    if (existing) existing.remove();
+
+    var backdrop = document.createElement("div");
+    backdrop.id = "transformation-lightbox";
+    backdrop.className = "lightbox-backdrop";
+    backdrop.setAttribute("role", "dialog");
+    backdrop.setAttribute("aria-modal", "true");
+    backdrop.setAttribute("aria-labelledby", "lightbox-title");
+    backdrop.hidden = true;
+
+    backdrop.innerHTML =
+      '<div class="lightbox-dialog">' +
+      '  <div class="lightbox-header">' +
+      '    <div>' +
+      '      <p class="meta-line" data-lightbox-meta></p>' +
+      '      <h3 class="lightbox-title" id="lightbox-title" data-lightbox-title></h3>' +
+      "    </div>" +
+      '    <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close photo lightbox">' +
+      '      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+      "    </button>" +
+      "  </div>" +
+      '  <div class="lightbox-compare" data-lightbox-compare></div>' +
+      '  <div class="lightbox-meta-row" data-lightbox-details></div>' +
+      '  <p class="lightbox-story" data-lightbox-story></p>' +
+      '  <p class="lightbox-quote" data-lightbox-quote></p>' +
+      '  <p class="lightbox-placeholder-note" data-lightbox-note></p>' +
+      '  <div class="lightbox-footer">' +
+      '    <div class="lightbox-nav-group">' +
+      '      <button type="button" class="lightbox-nav-btn" data-lightbox-prev aria-label="Previous transformation">&larr; Previous</button>' +
+      '      <button type="button" class="lightbox-nav-btn" data-lightbox-next aria-label="Next transformation">Next &rarr;</button>' +
+      "    </div>" +
+      '    <span class="num-tabular" style="font-size:0.875rem;color:#929ba5;" data-lightbox-counter></span>' +
+      "  </div>" +
+      "</div>";
+
+    document.body.appendChild(backdrop);
+
+    var closeBtn = backdrop.querySelector("[data-lightbox-close]");
+    var prevBtn = backdrop.querySelector("[data-lightbox-prev]");
+    var nextBtn = backdrop.querySelector("[data-lightbox-next]");
+    var metaEl = backdrop.querySelector("[data-lightbox-meta]");
+    var titleEl = backdrop.querySelector("[data-lightbox-title]");
+    var compareEl = backdrop.querySelector("[data-lightbox-compare]");
+    var detailsEl = backdrop.querySelector("[data-lightbox-details]");
+    var storyEl = backdrop.querySelector("[data-lightbox-story]");
+    var quoteEl = backdrop.querySelector("[data-lightbox-quote]");
+    var noteEl = backdrop.querySelector("[data-lightbox-note]");
+    var counterEl = backdrop.querySelector("[data-lightbox-counter]");
+
+    var activeIdx = 0;
+    var lastTrigger = null;
+
+    function renderLightboxStory(index) {
+      activeIdx = (index + items.length) % items.length;
+      var item = items[activeIdx];
+      var displayTitle =
+        item.clientName && String(item.clientName).trim()
+          ? item.clientName
+          : item.clientLabel;
+
+      if (metaEl) metaEl.textContent = item.goal + " · " + item.format;
+      if (titleEl) titleEl.textContent = displayTitle;
+      if (detailsEl) {
+        detailsEl.innerHTML =
+          "<span><strong>Duration:</strong> " +
+          escapeHtml(item.timeframe) +
+          "</span><span><strong>Mode:</strong> " +
+          escapeHtml(item.format) +
+          "</span>";
+      }
+      if (storyEl) storyEl.textContent = item.story || "";
+      if (quoteEl) {
+        quoteEl.textContent = item.quote || "";
+        quoteEl.hidden = !item.quote;
+      }
+      if (noteEl) {
+        noteEl.textContent = item.isPlaceholderMedia
+          ? "Placeholder comparison imagery shown until consented client photos are provided."
+          : "";
+        noteEl.hidden = !item.isPlaceholderMedia;
+      }
+      if (counterEl) {
+        counterEl.textContent =
+          (activeIdx < 9 ? "0" : "") +
+          (activeIdx + 1) +
+          " / " +
+          (items.length < 10 ? "0" : "") +
+          items.length;
+      }
+
+      if (compareEl) {
+        var hasBoth = Boolean(item.beforeImage && item.afterImage);
+        compareEl.classList.toggle("is-single", !hasBoth);
+        if (hasBoth) {
+          compareEl.innerHTML =
+            '<div class="lightbox-panel">' +
+            '  <span class="transformation-tag">Before</span>' +
+            '  <img src="' +
+            escapeHtml(item.beforeImage) +
+            '" alt="' +
+            escapeHtml(item.beforeAlt || displayTitle + " before photo") +
+            '">' +
+            "</div>" +
+            '<div class="lightbox-panel">' +
+            '  <span class="transformation-tag is-after">After</span>' +
+            '  <img src="' +
+            escapeHtml(item.afterImage) +
+            '" alt="' +
+            escapeHtml(item.afterAlt || displayTitle + " after photo") +
+            '">' +
+            "</div>";
+        } else {
+          var singleImg =
+            item.comparisonImage || item.afterImage || item.beforeImage || "";
+          compareEl.innerHTML = singleImg
+            ? '<div class="lightbox-panel">' +
+              '  <span class="transformation-tag is-after">Progress</span>' +
+              '  <img src="' +
+              escapeHtml(singleImg) +
+              '" alt="' +
+              escapeHtml(item.afterAlt || item.beforeAlt || displayTitle) +
+              '">' +
+              "</div>"
+            : "";
+        }
+      }
+    }
+
+    function openLightboxById(storyId, triggerEl) {
+      var foundIdx = 0;
+      for (var i = 0; i < items.length; i++) {
+        if ((items[i].id || "story-" + (i + 1)) === storyId) {
+          foundIdx = i;
+          break;
+        }
+      }
+      lastTrigger = triggerEl || document.activeElement;
+      renderLightboxStory(foundIdx);
+      backdrop.hidden = false;
+      document.body.classList.add("lightbox-open");
+      if (closeBtn) closeBtn.focus();
+    }
+
+    function closeLightbox() {
+      if (backdrop.hidden) return;
+      backdrop.hidden = true;
+      document.body.classList.remove("lightbox-open");
+      if (lastTrigger && typeof lastTrigger.focus === "function" && document.contains(lastTrigger)) {
+        lastTrigger.focus();
+      }
+      lastTrigger = null;
+    }
+
+    function onDocumentTriggerClick(e) {
+      var trigger = e.target.closest && e.target.closest("[data-lightbox-open]");
+      if (!trigger) return;
+      e.preventDefault();
+      openLightboxById(trigger.getAttribute("data-story-id") || "", trigger);
+    }
+
+    function onBackdropClick(e) {
+      if (e.target === backdrop) {
+        closeLightbox();
+      }
+    }
+
+    function onKeyDown(e) {
+      if (backdrop.hidden) return;
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closeLightbox();
+      } else if (e.key === "ArrowLeft" && items.length > 1) {
+        e.preventDefault();
+        renderLightboxStory(activeIdx - 1);
+      } else if (e.key === "ArrowRight" && items.length > 1) {
+        e.preventDefault();
+        renderLightboxStory(activeIdx + 1);
+      }
+    }
+
+    function cleanupLightbox() {
+      document.body.classList.remove("lightbox-open");
+      document.removeEventListener("click", onDocumentTriggerClick);
+      document.removeEventListener("keydown", onKeyDown);
+      backdrop.removeEventListener("click", onBackdropClick);
+      window.removeEventListener("pagehide", cleanupLightbox);
+    }
+
+    if (closeBtn) closeBtn.addEventListener("click", closeLightbox);
+    if (prevBtn) {
+      prevBtn.disabled = items.length <= 1;
+      prevBtn.addEventListener("click", function () {
+        renderLightboxStory(activeIdx - 1);
+      });
+    }
+    if (nextBtn) {
+      nextBtn.disabled = items.length <= 1;
+      nextBtn.addEventListener("click", function () {
+        renderLightboxStory(activeIdx + 1);
+      });
+    }
+
+    document.addEventListener("click", onDocumentTriggerClick);
+    document.addEventListener("keydown", onKeyDown);
+    backdrop.addEventListener("click", onBackdropClick);
+    window.addEventListener("pagehide", cleanupLightbox);
   }
 
   function renderTestimonialsCarousel() {
@@ -1458,6 +1737,7 @@
     renderServicesCarousel();
     renderTransformations();
     renderTransformationsCarousel();
+    initTransformationLightbox();
     renderTestimonialsCarousel();
     renderSocialLinks();
     initWhatsAppTopicSwitcher();
